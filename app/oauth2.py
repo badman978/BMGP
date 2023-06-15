@@ -36,11 +36,35 @@ def verify_access_token(token:str, credentials_exception):
        raise credentials_exception
     
     return token_data
+
+def verify_access_token_user(token:str, credentials_exception):
+    try:  
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        id:str = payload.get("user_username")
+
+        if id is None:
+            raise credentials_exception
+        
+        token_data = schemas.TokenData(username = id)
+    except JWTError:
+       raise credentials_exception
+    
+    return token_data
     
 def get_current_farm(token:str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
 
     token = verify_access_token(token, credentials_exception)
     user = db.query(models.Farms).filter(models.Farms.username == token.username).first()
+
+    return user
+
+
+def get_current_user(token:str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+    credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
+
+    token = verify_access_token_user(token, credentials_exception)
+    user = db.query(models.Users).filter(models.Users.username == token.username).first()
 
     return user

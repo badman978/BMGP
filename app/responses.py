@@ -11,6 +11,14 @@ class Farm(BaseModel):
     class Config:
         orm_mode = True
 
+class User(BaseModel):
+    username: str
+    address: str
+    email: EmailStr
+
+    class Config:
+        orm_mode = True
+
 class Farmer(BaseModel):
     id: int
     contact: str

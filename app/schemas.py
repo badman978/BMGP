@@ -3,19 +3,23 @@ from pydantic import BaseModel, EmailStr
 
 
 # Schemas
+class Base(BaseModel):
+    username: str
+    password: str
+    email: EmailStr 
+
 class Produce(BaseModel):
     farm_produce: str
     qty: str
     on_sale: bool = False
 
-
-class Farms(BaseModel):
-    username: str
-    password: str
-    email: EmailStr
+class Farms(Base):
     address: str
     contact: str
 
+class Users(Base):
+    contact: str
+    address: str
 
 class Login(BaseModel):
     username: str

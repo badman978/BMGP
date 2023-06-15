@@ -2,7 +2,7 @@
 from fastapi import FastAPI 
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import produce, farms, auth
+from .routers import produce, farms, auth, users
 #
 #
 
@@ -26,6 +26,7 @@ app.add_middleware(
 app.include_router(produce.router)
 app.include_router(farms.router)
 app.include_router(auth.router)
+app.include_router(users.router)
 
 @app.get("/")
 def root():
